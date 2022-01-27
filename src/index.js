@@ -7,8 +7,8 @@ app.use(express.json());
 app.use(routes);
 
 app.get("/", (req, res) => {
-  const user = getData();
-  return res.status(200).send({ message: user });
+  const users = getData();
+  return res.status(200).send({ message: users });
 });
 
 const PORT = process.env.PORT || 3333;
