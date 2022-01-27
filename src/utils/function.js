@@ -1,13 +1,17 @@
 const fileSystem = require('fs');
 
 const getData = () => {
-const result = JSON.parse(fileSystem.readFileSync('src/database/'+'user.data.json', 'UTF-8'))
-return console.log(result)
+const result = JSON.parse(fileSystem.readFileSync('src/database/'+'user.data.json', 'utf8'));
+console.log(result)
+return result;
+}
+
+const createOrUpdateUserData = (data) => {
+  fileSystem.writeFileSync('src/database/'+'user.data.json', JSON.stringify(data));
 }
 
 
-
-
 module.exports = {
+  createOrUpdateUserData,
   getData
 }
