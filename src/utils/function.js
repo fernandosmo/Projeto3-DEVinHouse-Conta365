@@ -2,7 +2,6 @@ const fileSystem = require('fs');
 
 const getData = () => {
 const result = JSON.parse(fileSystem.readFileSync('src/database/'+'user.data.json', 'utf8'));
-console.log(result)
 return result;
 }
 
