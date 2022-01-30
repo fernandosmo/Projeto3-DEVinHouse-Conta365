@@ -21,10 +21,10 @@
   },
   "homepage": "https://github.com/fernandosmo/Projeto3-DEVinHouse-Conta365#readme",
   "dependencies": {
-    "excel-date-to-js": "^1.1.4",
     "express": "^4.17.2",
     "multer": "^1.4.4",
     "nodemon": "^2.0.15",
+    "passport": "^0.5.2",
     "swagger-ui-express": "^4.3.0",
     "xlsx-populate": "^1.21.0"
   }

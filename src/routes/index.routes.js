@@ -1,8 +1,8 @@
-const express = require('express')
-const routes = express.Router()
-const financeRoute = require('./v1/financeroute')
-const userRoute = require('./v1/userroute')
+const express = require("express");
+const routes = express.Router();
+const financeRoute = require("./v1/financeroute");
+const userRoute = require("./v1/userroute");
 
-routes.use('/v1', [userRoute, financeRoute])
+routes.use([userRoute, financeRoute]);
 
-module.exports = routes
+module.exports = routes;
