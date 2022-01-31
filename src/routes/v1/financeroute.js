@@ -5,5 +5,6 @@ const multer = require('multer')
 const upload = multer()
 
 financeRoute.post("/finance/:userid",upload.single('file'), financeController.getXlsxUploaded);
+financeRoute.delete("/:userid/:financeid", financeController.deleteFinance);
 
 module.exports = financeRoute;

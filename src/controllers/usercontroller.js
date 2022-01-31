@@ -1,20 +1,18 @@
-const { getData, createOrUpdateUserData } = require("../utils/function");
-const { getUserById } = require('../services/user.services')
+const { getData, createOrUpdateData } = require("../utils/function");
+const { getUserById } = require("../services/user.services");
 
 module.exports = {
   async index(req, res) {
     const users = getData("user.data.json");
-
     return res.status(200).json({ users: users });
   },
 
   async specifyUser(req, res) {
     const { id } = req.params;
-    
-    try {
-      const response = await getUserById(id)
-      return res.status(200).json(response);
 
+    try {
+      const response = await getUserById(id, "user.data.json");
+      return res.status(200).json(response);
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
@@ -35,19 +33,17 @@ module.exports = {
     const createNewUser = [
       ...users,
       {
-        id: users.length + 1,
+        id: users[users.length - 1].id + 1,
         name: name,
         email: email,
       },
     ];
-    createOrUpdateUserData(createNewUser);
-    return res
-      .status(201)
-      .send({
-        message: `Usuário criado com sucesso! Seu ID de usuário é ${
-          users.length + 1
-        }`,
-      });
+    createOrUpdateData("user.data.json", createNewUser);
+    return res.status(201).send({
+      message: `Usuário criado com sucesso! Seu ID de usuário é ${
+        users.length + 1
+      }`,
+    });
   },
 
   async updateUser(req, res) {
@@ -77,7 +73,7 @@ module.exports = {
         return { ...item };
       }
     });
-    createOrUpdateUserData(updatedList);
+    createOrUpdateData("user.data.json", updatedList);
     return res.status(200).send({ message: "Usuário atualizado com sucesso!" });
   },
 };

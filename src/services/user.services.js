@@ -1,8 +1,8 @@
 const { getData } = require("../utils/function");
 
 module.exports = {
-  async getUserById(id) {
-    const users = getData("user.data.json");
+  async getUserById(id, fileName) {
+    const users = getData(fileName);
     try {
       const user = users.find((item) => item.id === Number(id));
 

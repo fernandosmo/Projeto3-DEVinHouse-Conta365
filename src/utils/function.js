@@ -8,7 +8,7 @@ const getData = (filename) => {
   return result;
 };
 
-const createOrUpdateUserData = (fileName, data) => {
+const createOrUpdateData = (fileName, data) => {
   fileSystem.writeFileSync(
     "src/database/" + fileName,
     JSON.stringify(data)
@@ -16,6 +16,6 @@ const createOrUpdateUserData = (fileName, data) => {
 };
 
 module.exports = {
-  createOrUpdateUserData,
+  createOrUpdateData,
   getData,
 };
