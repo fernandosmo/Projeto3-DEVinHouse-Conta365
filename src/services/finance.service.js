@@ -29,7 +29,7 @@ module.exports = {
     const finances = await getData("finance.data.json");
     const users = getData("user.data.json");
 
-    if ((arraytofind = finances)) {
+    if ((arraytofind == finances)) {
       try {
         const user = arraytofind.indexOf(
           arraytofind.find((x) => x.userId === Number(userid))
@@ -42,7 +42,7 @@ module.exports = {
         return { error: error.message };
       }
     }
-    if ((arraytofind = users)) {
+    if ((arraytofind == users)) {
       try {
         const user = arraytofind.indexOf(
           arraytofind.find((x) => x.id === Number(userid))

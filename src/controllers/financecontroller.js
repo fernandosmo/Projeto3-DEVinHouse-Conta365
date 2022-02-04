@@ -1,4 +1,8 @@
-const { getData, createOrUpdateData } = require("../utils/function");
+const {
+  getData,
+  createOrUpdateData,
+  convertDate,
+} = require("../utils/function");
 const xlsxPopulate = require("xlsx-populate");
 const {
   getUserByIdForFinance,
@@ -9,14 +13,9 @@ const {
 module.exports = {
   async getXlsxUploaded(req, res) {
     const { userid } = req.params;
-    const users = await getData("user.data.json");
-    const idexUser = await indexUser(users, userid);
+    const users = getData("user.data.json");
     const finances = await getData("finance.data.json");
-    const userToFinance = await getUserByIdForFinance(
-      userid,
-      "finance.data.json"
-    );
-
+    const idexUser = await indexUser(users, userid);
     const xlsxData = await xlsxPopulate.fromDataAsync(req.file.buffer);
     const rows = xlsxData.sheet(0).usedRange().value();
     const [firstRow] = rows;
@@ -24,6 +23,37 @@ module.exports = {
     const validateKeys = firstRow.every((item, index) => {
       return keys[index] === item;
     });
+
+    switch (
+      users.find((x) => x.id === Number(userid)) &&
+      !finances.find((x) => x.userId === Number(userid))
+    ) {
+      case true: {
+        const newUserOfUsers = {
+          id: finances[finances.length - 1].id + 1,
+          userId: Number(userid),
+          financialData: [],
+        };
+
+        finances.splice(finances.length, 0, newUserOfUsers),
+          createOrUpdateData("finance.data.json", finances);
+        break;
+      }
+      case false:
+        switch (
+          !users.find((x) => x.id === Number(userid)) &&
+          !finances.find((x) => x.userId === Number(userid))
+        ) {
+          case true: {
+            res.status(400).send({
+              message:
+                "Usuário invalido, verifique os dados informados.",
+            });
+            break;
+          }
+        }
+    }
+
     if (firstRow.length !== 4 || !validateKeys) {
       return res.status(400).send({
         message:
@@ -31,8 +61,25 @@ module.exports = {
       });
     }
 
-    const filterRows = rows.filter((_, index) => index !== 0);
-    filterRows.map((row) => {
+    const userToFinance = await getUserByIdForFinance(
+      userid,
+      "finance.data.json"
+    );
+
+    const idsOfUsers = [];
+    let i = 0;
+    while (i < users.length) {
+      idsOfUsers.push(users[i].id);
+      i++;
+    }
+
+    if (!idsOfUsers.includes(Number(userid))) {
+      return res.status(400).send({
+        message: "Usuário invalido, verifique os dados informados.",
+      });
+    }
+    const populateRows = rows.filter((_, index) => index !== 0);
+    populateRows.map((row) => {
       const result = row.map((itemInRow, index) => {
         return {
           [firstRow[index]]: itemInRow
@@ -42,27 +89,35 @@ module.exports = {
                 .send({ message: "Todos os campos devem ser preenchidos" }),
         };
       });
-      userToFinance.financialData.push(
-        Object.assign(
-          {},
-          { id: userToFinance.financialData[userToFinance.financialData.length - 1].id + 1 },
-          ...result
-        )
-      );
-      if (isNaN(idexUser)) {
-        return res.status(400).send({
-          message:
-            "Usuário invalido, verifique os dados informados ou vá em criar novo usuário pelo metodo POST.",
-        });
-      } else {
-        const userChangedFromFinances = finances.splice(
-          idexUser,
-          1,
-          userToFinance
-        );
-      }
-    });
 
+      if (userToFinance.financialData.length > 0) {
+        userToFinance.financialData.push(
+          Object.assign(
+            {},
+            {
+              id:
+                userToFinance.financialData[
+                  userToFinance.financialData.length - 1
+                ].id + 1,
+            },
+            ...result
+          )
+        );
+          }
+        if (userToFinance.financialData.length == 0) {
+          userToFinance.financialData.push(
+            Object.assign(
+              {},
+              {
+                id: 1,
+              },
+              ...result
+            )
+          );
+        }
+      }
+    );
+    finances.splice(finances.length - 1, 1, userToFinance);
     createOrUpdateData("finance.data.json", finances);
     return res.status(201).send({ message: "Despesa salva com sucesso." });
   },
@@ -121,5 +176,36 @@ module.exports = {
       createOrUpdateData("finance.data.json", finances);
       return res.status(200).send({ message: "Despesa deletada com sucesso." });
     }
+  },
+
+  async getFinanceByUser(req, res) {
+    const { userid } = req.params;
+    const typesOfExpenses = req.query.typeofexpense;
+    const finances = await getData("finance.data.json");
+    const users = await getData("user.data.json");
+    const userToFinance = await getUserByIdForFinance(
+      userid,
+      "finance.data.json"
+    );
+    const findFinancesForUser = userToFinance.financialData;
+
+    const arrDate = findFinancesForUser.map((a) => a.date);
+
+    const filterMonth = () => {
+      const ArrDateConverted = [];
+      for (let z = 0; z < arrDate.length; z++) {
+        const dateConverted = convertDate(arrDate[z]);
+        ArrDateConverted.push(dateConverted);
+      }
+      return ArrDateConverted;
+    };
+
+    const arrOfPrices = findFinancesForUser.map((a) => a.price);
+
+    const soma = arrOfPrices.reduce(function (soma, i) {
+      return soma + i;
+    });
+
+    return res.status(200).send(filterMonth());
   },
 };
