@@ -7,15 +7,16 @@ const xlsxPopulate = require("xlsx-populate");
 const {
   getUserByIdForFinance,
   indexFinance,
-  indexUser,
+  indexUserFinances,
 } = require("../services/finance.service");
 
 module.exports = {
   async getXlsxUploaded(req, res) {
+    const { file } = req.file;
     const { userid } = req.params;
     const users = getData("user.data.json");
     const finances = await getData("finance.data.json");
-    const idexUser = await indexUser(users, userid);
+    const idexUser = await indexUserFinances(userid);
     const xlsxData = await xlsxPopulate.fromDataAsync(req.file.buffer);
     const rows = xlsxData.sheet(0).usedRange().value();
     const [firstRow] = rows;
@@ -46,8 +47,7 @@ module.exports = {
         ) {
           case true: {
             res.status(400).send({
-              message:
-                "Usuário invalido, verifique os dados informados.",
+              message: "Usuário invalido, verifique os dados informados.",
             });
             break;
           }
@@ -103,22 +103,31 @@ module.exports = {
             ...result
           )
         );
-          }
-        if (userToFinance.financialData.length == 0) {
-          userToFinance.financialData.push(
-            Object.assign(
-              {},
-              {
-                id: 1,
-              },
-              ...result
-            )
-          );
-        }
       }
-    );
-    finances.splice(finances.length - 1, 1, userToFinance);
-    createOrUpdateData("finance.data.json", finances);
+      if (userToFinance.financialData.length == 0) {
+        userToFinance.financialData.push(
+          Object.assign(
+            {},
+            {
+              id: 1,
+            },
+            ...result
+          )
+        );
+      }
+    });
+    if (finances[Number(userid) - 1].financialData === "") {
+      finances.splice(finances.length - 1, 1, userToFinance);
+      createOrUpdateData("finance.data.json", finances);
+    }
+    {
+      const userChangedFromFinances = finances.splice(
+        idexUser,
+        1,
+        userToFinance
+      );
+      createOrUpdateData("finance.data.json", finances);
+    }
     return res.status(201).send({ message: "Despesa salva com sucesso." });
   },
 
@@ -152,7 +161,7 @@ module.exports = {
       financeid
     );
 
-    const idexUser = await indexUser(finances, userid);
+    const idexUser = await indexUserFinances(userid);
 
     if (isNaN(idexUser)) {
       return res.status(400).send({
@@ -191,14 +200,61 @@ module.exports = {
 
     const arrDate = findFinancesForUser.map((a) => a.date);
 
-    const filterMonth = () => {
+    const arrOfDateConverted = () => {
       const ArrDateConverted = [];
       for (let z = 0; z < arrDate.length; z++) {
-        const dateConverted = convertDate(arrDate[z]);
+        const dateConverted = convertDate(findFinancesForUser[z].date, "year");
         ArrDateConverted.push(dateConverted);
       }
       return ArrDateConverted;
     };
+    arrOfDateConverted();
+    //a partir daqui
+    const monthsName = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
+    ];
+    const getOrderedTransactionByMothAndYear = (transactions) => {
+      const years = transactions.map((item) => {
+        const date = new Date(item.date);
+        const ano = date.getFullYear();
+        const mes = date.getMonth();
+        return {
+          [ano]: {
+            [monthsName[mes]]: item.price,
+          },
+        };
+      });
+      let yearsWithData = {};
+      years.forEach((item, index) => {
+        const [year] = Object.keys(item);
+        const [month] = Object.keys(item[year]);
+        if (!yearsWithData[year]) {
+          yearsWithData[year] = {
+            [month]: Number(item[year][month]),
+          };
+        } else if (yearsWithData[year]) {
+          const value = yearsWithData[year][month] || 0;
+          yearsWithData[year] = {
+            ...yearsWithData[year],
+            [month]: Number(item[year][month]) + Number(value),
+          };
+        }
+      });
+      return yearsWithData;
+    };
+    getOrderedTransactionByMothAndYear(findFinancesForUser);
+    // até aqui
 
     const arrOfPrices = findFinancesForUser.map((a) => a.price);
 
@@ -206,6 +262,8 @@ module.exports = {
       return soma + i;
     });
 
-    return res.status(200).send(filterMonth());
+    return res
+      .status(200)
+      .send(getOrderedTransactionByMothAndYear(findFinancesForUser));
   },
 };

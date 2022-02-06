@@ -15,16 +15,9 @@ const createOrUpdateData = (fileName, data) => {
   );
 };
 
-const convertDate = (item, monthOrYear) => {
+const convertDate = (item, Year) => {
 
-  if(monthOrYear === "month"){
-  const startToCovertDateExcel  = Math.floor(item - 25569);
-  const dateExcelMultipliedToConvert = startToCovertDateExcel * 86400;                                        
-  const convertExcelDate = new Date(dateExcelMultipliedToConvert * 1000);
-  const data = new Date((convertExcelDate.getFullYear()), (convertExcelDate.getMonth()), (convertExcelDate.getDate()));
-  return data.getMonth() + 1;
-  }
-  if(monthOrYear === "year"){
+  if(Year === "year"){
   const startToCovertDateExcel  = Math.floor(item - 25569);
   const dateExcelMultipliedToConvert = startToCovertDateExcel * 86400;                                        
   const convertExcelDate = new Date(dateExcelMultipliedToConvert * 1000);

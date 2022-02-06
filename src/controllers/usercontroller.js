@@ -48,6 +48,7 @@ module.exports = {
 
   async updateUser(req, res) {
     const { id } = req.params;
+    const { name, email } = req.body;
     const users = getData("user.data.json");
     const findUser = users.find((item) => item.id === Number(id));
     const userForUpdate = req.body;

@@ -25,28 +25,25 @@ module.exports = {
       return { error: error.message };
     }
   },
-  async indexUser(arraytofind, userid) {
+  async indexUserFinances(userid) {
     const finances = await getData("finance.data.json");
-    const users = getData("user.data.json");
-
-    if ((arraytofind == finances)) {
-      try {
-        const user = arraytofind.indexOf(
-          arraytofind.find((x) => x.userId === Number(userid))
-        );
-        if (user < 0) {
-          throw new Error(`Nenhum usuário com o ID ${userid} foi encontrado`);
-        }
-        return user;
-      } catch (error) {
-        return { error: error.message };
+    try {
+      const user = finances.indexOf(
+        finances.find((x) => x.userId === Number(userid))
+      );
+      if (user < 0) {
+        throw new Error(`Nenhum usuário com o ID ${userid} foi encontrado`);
       }
+      return user;
+    } catch (error) {
+      return { error: error.message };
     }
-    if ((arraytofind == users)) {
+  },
+  async indexUser(userid) {
+    const users = getData("user.data.json");
+    if (users == users) {
       try {
-        const user = arraytofind.indexOf(
-          arraytofind.find((x) => x.id === Number(userid))
-        );
+        const user = users.indexOf(users.find((x) => x.id === Number(userid)));
         if (user < 0) {
           throw new Error(`Nenhum usuário com o ID ${userid} foi encontrado`);
         }
