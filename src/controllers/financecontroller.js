@@ -189,81 +189,106 @@ module.exports = {
 
   async getFinanceByUser(req, res) {
     const { userid } = req.params;
-    const typesOfExpenses = req.query.typeofexpense;
-    const finances = await getData("finance.data.json");
-    const users = await getData("user.data.json");
+    const typeOfExpenses = req.query;
     const userToFinance = await getUserByIdForFinance(
       userid,
       "finance.data.json"
     );
+    const idexUser = await indexUserFinances(userid);
     const findFinancesForUser = userToFinance.financialData;
+    if (isNaN(idexUser)) {
+      return res.status(400).send({
+        message: "Usuário invalido, verifique os dados informados.",
+      });
+    } else {
+      const mapByType = findFinancesForUser.map((a) => {
+        return a.typeOfExpenses;
+      });
 
-    const arrDate = findFinancesForUser.map((a) => a.date);
+      const convertQuery = Object.values(typeOfExpenses);
+      const months = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
 
-    const arrOfDateConverted = () => {
-      const ArrDateConverted = [];
-      for (let z = 0; z < arrDate.length; z++) {
-        const dateConverted = convertDate(findFinancesForUser[z].date, "year");
-        ArrDateConverted.push(dateConverted);
-      }
-      return ArrDateConverted;
-    };
-    arrOfDateConverted();
-    //a partir daqui
-    const monthsName = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro",
-    ];
-    const getOrderedTransactionByMothAndYear = (transactions) => {
-      const years = transactions.map((item) => {
-        const date = new Date(item.date);
-        const ano = date.getFullYear();
-        const mes = date.getMonth();
-        return {
-          [ano]: {
-            [monthsName[mes]]: item.price,
-          },
+      if (convertQuery == "") {
+        const filterFinancesByDate = () => {
+          const years = findFinancesForUser.map((item) => {
+            const date = new Date(convertDate(item.date));
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            return {
+              [year]: {
+                [months[month]]: item.price,
+              },
+            };
+          });
+          let financesByYear = {};
+          years.forEach((item) => {
+            const [year] = Object.keys(item);
+            const [month] = Object.keys(item[year]);
+            if (financesByYear[year]) {
+              const value = financesByYear[year][month] || 0;
+              financesByYear[year] = {
+                ...financesByYear[year],
+                [month]: Number(item[year][month]) + Number(value),
+              };
+            }
+            if (!financesByYear[year]) {
+              financesByYear[year] = {
+                [month]: Number(item[year][month]),
+              };
+            }
+          });
+          return financesByYear;
         };
-      });
-      let yearsWithData = {};
-      years.forEach((item, index) => {
-        const [year] = Object.keys(item);
-        const [month] = Object.keys(item[year]);
-        if (!yearsWithData[year]) {
-          yearsWithData[year] = {
-            [month]: Number(item[year][month]),
-          };
-        } else if (yearsWithData[year]) {
-          const value = yearsWithData[year][month] || 0;
-          yearsWithData[year] = {
-            ...yearsWithData[year],
-            [month]: Number(item[year][month]) + Number(value),
-          };
+
+        return res.status(200).send(filterFinancesByDate());
+      }
+
+      if (!typeOfExpenses) {
+        return res.status(400).send({
+          message: "tipo de despesa invalido, favor informar um valor válido.",
+        });
+      }
+      let arrValuesObj = []
+      if (mapByType.includes(convertQuery[0])) {
+        const indexTypeArr = findFinancesForUser.map((a) => {
+          arrValuesObj = Object.values(a);
+          if (arrValuesObj.includes(convertQuery[0])) {
+            console.log(arrValuesObj);
+            return arrValuesObj.indexOf(convertQuery[0]);
+          } else {
+          }
+        });
+        const IndexWithDeleteUndefined = indexTypeArr.filter(
+          (i) => i !== undefined
+        );
+        let totalOfType = 0
+        const sumOfType = IndexWithDeleteUndefined.map((a) => {
+          return (totalOfType = arrValuesObj[a-1] + totalOfType);
+        });
+        const showTotalByType = {
+          [convertQuery]: totalOfType
         }
-      });
-      return yearsWithData;
-    };
-    getOrderedTransactionByMothAndYear(findFinancesForUser);
-    // até aqui
-
-    const arrOfPrices = findFinancesForUser.map((a) => a.price);
-
-    const soma = arrOfPrices.reduce(function (soma, i) {
-      return soma + i;
-    });
-
-    return res
-      .status(200)
-      .send(getOrderedTransactionByMothAndYear(findFinancesForUser));
+        console.log(showTotalByType)
+        return res.status(200).send(showTotalByType);
+      }
+      if (!mapByType.includes(convertQuery[0])) {
+        return res.status(400).send({
+          message: "tipo de despesa invalido, favor informar um valor válido.",
+        });
+      }
+    }
   },
 };

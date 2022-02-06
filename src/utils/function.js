@@ -29,7 +29,7 @@ const convertDate = (item, Year) => {
   const dateExcelMultipliedToConvert = startToCovertDateExcel * 86400;                                        
   const convertExcelDate = new Date(dateExcelMultipliedToConvert * 1000);
   const data = new Date((convertExcelDate.getFullYear()), (convertExcelDate.getMonth()), (convertExcelDate.getDate()));
-  return ((data.getDate() )) + "/" + ((data.getMonth() + 1)) + "/" + data.getFullYear(); 
+  return (((data.getMonth() + 1)) + "/" + (data.getDate() )) + "/" + data.getFullYear(); 
   }
 }
 
