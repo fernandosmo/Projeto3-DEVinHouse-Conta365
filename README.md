@@ -18,7 +18,6 @@ Para executar utilize o comando:
 
 ```
 npm start
-
 ```
 ## Acessando a API
 
