@@ -166,7 +166,7 @@
                 "type": "object",
                 "properties": {
                   "file": {
-                    "type": ".xlsx",
+                    "type": "file",
                     "format": "binary"
                   }}}}}},
         "parameters": [

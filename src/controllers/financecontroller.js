@@ -116,7 +116,9 @@ module.exports = {
         );
       }
     });
-    if (finances[Number(userid) - 1].financialData === "") {
+    const positionUserOnFinance = "";
+    if (finances[idexUser].financialData == "")
+    {
       finances.splice(finances.length - 1, 1, userToFinance);
       createOrUpdateData("finance.data.json", finances);
     }
@@ -204,7 +206,7 @@ module.exports = {
       const mapByType = findFinancesForUser.map((a) => {
         return a.typeOfExpenses;
       });
-
+      const nonRepeatUserTypes = [...new Set(mapByType)]
       const convertQuery = Object.values(typeOfExpenses);
       const months = [
         "Janeiro",
@@ -258,7 +260,7 @@ module.exports = {
 
       if (!typeOfExpenses) {
         return res.status(400).send({
-          message: "tipo de despesa invalido, favor informar um valor válido.",
+          message: `tipo de despesa invalido para esse usuário, favor informar um dos seguintes valores: ${nonRepeatUserTypes.join(", ")}.`,
         });
       }
       let arrValuesObj = []
@@ -266,7 +268,6 @@ module.exports = {
         const indexTypeArr = findFinancesForUser.map((a) => {
           arrValuesObj = Object.values(a);
           if (arrValuesObj.includes(convertQuery[0])) {
-            console.log(arrValuesObj);
             return arrValuesObj.indexOf(convertQuery[0]);
           } else {
           }
@@ -281,12 +282,11 @@ module.exports = {
         const showTotalByType = {
           [convertQuery]: totalOfType
         }
-        console.log(showTotalByType)
         return res.status(200).send(showTotalByType);
       }
       if (!mapByType.includes(convertQuery[0])) {
         return res.status(400).send({
-          message: "tipo de despesa invalido, favor informar um valor válido.",
+          message: `tipo de despesa invalido para esse usuário, favor informar um dos seguintes valores: ${nonRepeatUserTypes.join(", ")}.`,
         });
       }
     }
