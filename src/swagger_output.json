@@ -36,7 +36,7 @@
   "paths": {
     "/users": {
       "get": {
-        "description": "",
+        "description": "Caminho para trazer toda a lista de usuários.",
         "parameters": [],
         "responses": {
           "200": {
@@ -47,14 +47,14 @@
     },
     "/user/{id}": {
       "get": {
-        "description": "",
+        "description": "Caminho para trazer as informações de usuário específico pelo seu ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -68,14 +68,14 @@
         }
       },
       "patch": {
-        "description": "",
+        "description": "Caminho para atualizar as informações de um usuário informando seu ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -108,8 +108,26 @@
     },
     "/newuser": {
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "Caminho para criar um novo usuário.",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Fulano"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "fulano@example.com"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -139,7 +157,7 @@
     },
     "/finance/{userid}": {
       "post": {
-        "description": "",
+        "description": "Caminho para fazer upload de finanças através de um arquivo .xlsx. Dados de despesa devem ser inserido obrigatóriamente na seguinte ordem: price, typeOfExpenses, date, name.",
         "requestBody": {
           "required": true,
           "content": {
@@ -148,7 +166,7 @@
                 "type": "object",
                 "properties": {
                   "file": {
-                    "type": "string",
+                    "type": ".xlsx",
                     "format": "binary"
                   }}}}}},
         "parameters": [
@@ -157,7 +175,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -178,7 +196,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           },
           {
@@ -198,14 +216,14 @@
     },
     "/{userid}/{financeid}": {
       "delete": {
-        "description": "",
+        "description": "Caminho para deletar uma finança específica de um usuário específico, informando, respectivamente, o ID do usuário e o ID da finança a ser deletada.",
         "parameters": [
           {
             "name": "userid",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           },
           {
@@ -213,7 +231,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
