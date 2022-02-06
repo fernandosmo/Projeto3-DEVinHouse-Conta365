@@ -2,9 +2,10 @@
 
 Api desenvolvida para controle de finanças - Projeto 3 do curso DevinHouse - NodeJs
 
-## Primeiros passos
 
-Essas instruções permitirão que você obtenha uma cópia do projeto em operação na sua máquina local para fins de desenvolvimento e teste.
+## Instruções
+
+Essas instruções permitirão que você faça uma cópia do projeto em operação.
 
 
 ### 🔧 Instalação
@@ -29,32 +30,43 @@ http://localhost:3333/
 https://safe-headland-78066.herokuapp.com/
 
 
+## Acessando a documentação da API
+
+Para acessar a documentação acesse um dos links:
+
+http://localhost:3333/docs/
+
+
+https://safe-headland-78066.herokuapp.com/docs/
+
+
 ## Funcionamento
 
 A API é composta por endpoints que te permitem fazer as seguintes ações (caminho usado para explicação http://localhost:3333/):
 
+
 ## User
-### get
+### GET
 ```
 http://localhost:3333/users
 ```
 Retorna a lista e todos os usuários.
 
-### get
+### GET
 
 ```
 http://localhost:3333/user/:id
 ```
 Retorna as informações de um usuário específico.
 
-### póst
+### POST
 
 ```
 http://localhost:3333/newuser
 ```
 Endpoint para criar um novo usuário.
 
-### patch
+### PATCH
 
 ```
 http://localhost:3333/user/:id
@@ -62,17 +74,17 @@ http://localhost:3333/user/:id
 Endpoint para atualizar as informações de um usuário específico.
 
 ## Finance
-### post
+### POST
 ```
 http://localhost:3333//finance/:userid
 ```
 Endpoint para fazer upload de um arquivo xlsx com as finanças de um usuário e salvá-las.
 
-### delete
+### DELETE
 ```
 http://localhost:3333//:userid/:financeid
 ```
-
+Endpoint para excluir uma finança específico de um um usuário.
 
 
 ## 🛠️ Construído com
@@ -86,11 +98,13 @@ http://localhost:3333//:userid/:financeid
 * [swagger-autogen](https://www.npmjs.com/package/swagger-autogen)
 * [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express)
 
+
 ## Autor
 **Fernando Silva** 
-[Github](https://github.com/fernandosmo)
-[Linkedin](https://www.linkedin.com/in/fernandosmo)
+*[Github](https://github.com/fernandosmo)
+*[Linkedin](https://www.linkedin.com/in/fernandosmo)
+
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT
+Este projeto está sob a licença MIT.
