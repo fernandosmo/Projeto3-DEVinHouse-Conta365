@@ -8,7 +8,7 @@ Api desenvolvida para controle de finanças - Projeto 3 do curso DevinHouse - No
 Essas instruções permitirão que você faça uma cópia do projeto em operação.
 
 
-### 🔧 Instalação
+### Instalação
 
 Para utilizar essa API, antes de mais nada, é preciso a instalação do package.json com o comando:
 ```
@@ -86,7 +86,7 @@ http://localhost:3333//:userid/:financeid
 Endpoint para excluir uma finança específico de um um usuário.
 
 
-## 🛠️ Construído com
+## Construído com
 
 * [Node.Js](https://nodejs.org/en/) 
 * [Express](https://expressjs.com/pt-br/) 
@@ -100,10 +100,10 @@ Endpoint para excluir uma finança específico de um um usuário.
 
 ## Autor
 **Fernando Silva** 
-*[Github](https://github.com/fernandosmo)
-*[Linkedin](https://www.linkedin.com/in/fernandosmo)
+* [Github](https://github.com/fernandosmo)
+* [Linkedin](https://www.linkedin.com/in/fernandosmo)
 
 
-## 📄 Licença
+## Licença
 
 Este projeto está sob a licença MIT.
