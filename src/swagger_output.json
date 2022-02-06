@@ -189,7 +189,7 @@
         }
       },
       "get": {
-        "description": "",
+        "description": "Caminho para retornar o total de gastos, de um usuário específico, por ano/mês ou por um tipo específico de despesa",
         "parameters": [
           {
             "name": "userid",
