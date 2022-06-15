@@ -19,16 +19,6 @@ Para executar utilize o comando:
 ```
 npm start
 ```
-## Acessando a API
-
-Existem dois caminhos para acessar a API e testá-la:
-
-http://localhost:3333/
-
-
-https://safe-headland-78066.herokuapp.com/
-
-
 ## Acessando a documentação da API
 
 Para acessar a documentação acesse um dos links:
